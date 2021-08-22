@@ -1,5 +1,5 @@
-# Link to Webapp [https://web-worldbank-dashboard.herokuapp.com/](https://web-worldbank-dashboard.herokuapp.com/)
- <!-- | https://git.heroku.com/web-worldbank-dashboard.git -->
+# Link to Webapp [https://dashboard-wb-gdp.herokuapp.com/](https://dashboard-wb-gdp.herokuapp.com/)
+ 
 # World Bank API Data Dashboard 
 
 This is a flask app that visualizes data from the world bank API. Data is
@@ -27,3 +27,11 @@ To install the flask app, you need:
 
 On a MacOS/linux system, installation is easy. Open a terminal, and go into 
 the directory with the flask app files. Run `python worldbank.py` in the terminal.
+
+### Updating after deployment
+After make changes, 
+```
+git add .
+git commit -m "message"
+git push heroku master
+```
