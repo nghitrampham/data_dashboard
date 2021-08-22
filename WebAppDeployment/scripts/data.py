@@ -62,8 +62,10 @@ def return_figures(countries=country_default):
 
     data_frames.append(data)
   
+  #########################################################
   # first chart plots arable land from 1990 to 2015 in top 10 economies 
   # as a line chart
+  #########################################################
   graph_one = []
   df_one = pd.DataFrame(data_frames[0])
 
@@ -91,11 +93,12 @@ def return_figures(countries=country_default):
 
   layout_one = dict(title = 'Change in GDP in Various Countries from 1990 to 2015',
                 xaxis = dict(title = 'Year',
-                  autotick=False, tick0=1990, dtick=25),
+                  autotick=False, tick0=1991, dtick=25),
                 yaxis = dict(title = 'GDP'),
                 )
-
+  #########################################################
   # second chart plots ararble land for 2015 as a bar chart
+  #########################################################
   graph_two = []
   df_one.sort_values('value', ascending=False, inplace=True)
   df_one = df_one[df_one['date'] == '2015'] 
@@ -111,32 +114,67 @@ def return_figures(countries=country_default):
                 xaxis = dict(title = 'Country',),
                 yaxis = dict(title = 'Hectares per person'),
                 )
-
+  #########################################################
   # third chart plots percent of population that is rural from 1990 to 2015
-  graph_three = []
-  df_three = pd.DataFrame(data_frames[1])
-  df_three = df_three[(df_three['date'] == '2015') | (df_three['date'] == '1990')]
+  #########################################################
+  # graph_three = []
+  # df_three = pd.DataFrame(data_frames[1])
+  # df_three = df_three[(df_three['date'] == '2015') | (df_three['date'] == '1990')]
 
-  df_three.sort_values('value', ascending=False, inplace=True)
-  for country in countrylist:
-      x_val = df_three[df_three['country'] == country].date.tolist()
-      y_val =  df_three[df_three['country'] == country].value.tolist()
-      graph_three.append(
-          go.Scatter(
-          x = x_val,
-          y = y_val,
-          mode = 'lines',
-          name = country
-          )
-      )
+  # df_three.sort_values('value', ascending=False, inplace=True)
+  # for country in countrylist:
+  #     x_val = df_three[df_three['country'] == country].date.tolist()
+  #     y_val =  df_three[df_three['country'] == country].value.tolist()
+  #     graph_three.append(
+  #         go.Scatter(
+  #         x = x_val,
+  #         y = y_val,
+  #         mode = 'lines',
+  #         name = country
+  #         )
+  #     )
 
-  layout_three = dict(title = 'Change in Rural Population <br> (Percent of Total Population)',
-                xaxis = dict(title = 'Year',
-                  autotick=False, tick0=1990, dtick=25),
-                yaxis = dict(title = 'Percent'),
-                )
+  # layout_three = dict(title = 'Change in Rural Population <br> (Percent of Total Population)',
+  #               xaxis = dict(title = 'Year',
+  #                 autotick=False, tick0=1990, dtick=25),
+  #               yaxis = dict(title = 'Percent'),
+  #               )
 
+
+
+  graph_three = [{
+    type: 'scattergeo',
+    mode: 'markers',
+    locations: ['FRA', 'DEU', 'RUS', 'JPN'],
+    marker: {
+        size: [20, 30, 15, 100],
+        color: [10, 20, 40, 50],
+        cmin: 0,
+        cmax: 50,
+        colorscale: 'Greens',
+        colorbar: {
+            title: 'Some rate',
+            ticksuffix: '%',
+            showticksuffix: 'last'
+        },
+        line: {
+            color: 'black'
+        }
+    },
+    name: 'europe data'
+  }]
+
+  layout_three = {
+    'geo': {
+        'scope': 'earth',
+        'resolution': 50
+    }
+  }
+
+
+  #########################################################
   # fourth chart shows rural population vs arable land as percents
+  #########################################################
   graph_four = []
   df_four_a = pd.DataFrame(data_frames[2])
   df_four_a = df_four_a[['country', 'date', 'value']]
@@ -178,8 +216,9 @@ def return_figures(countries=country_default):
                 yaxis = dict(title = '% of Area that is Forested', range=[0,100], dtick=10),
                 )
 
-
+  #########################################################
   # append all charts
+  #########################################################
   figures = []
   figures.append(dict(data=graph_one, layout=layout_one))
   figures.append(dict(data=graph_two, layout=layout_two))
