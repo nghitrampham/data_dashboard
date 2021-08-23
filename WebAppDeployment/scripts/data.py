@@ -107,6 +107,11 @@ def return_figures(countries=country_default):
       go.Bar(
       x = df_one.country.tolist(),
       y = df_one.value.tolist(),
+      marker =  {
+      'color': '#1f77b4b',
+      'line': {
+          'width': 2
+      }
       )
   )
 
@@ -117,18 +122,23 @@ def return_figures(countries=country_default):
   #########################################################
   # third chart plots percent of population that is rural from 1990 to 2015
   #########################################################
+
+  df_three = pd.DataFrame(data_frames[1])
+  df_three = df_three[(df_three['date'] == '2015')]
+
   locations = []
+  y_val = []
   for country in countrylist:
     locations.append(country_default[country])
+    y_val.append(df_three[df_three['country'] == country].value.tolist()[0])
 
   graph_three = []
   graph_three.append(
       go.Scattergeo(
-        # locations = ['FRA', 'DEU', 'RUS', 'JPN', 'GBR', 'CHN', 'CAN', 'USA', 'BRA', 'IND'],
         locations = locations,
         marker = {
-          'size': [20, 30, 15, 100, 80, 20, 30, 15, 100, 80],
-          'color': [10, 20, 40, 50, 60, 20, 30, 15, 100, 80],
+          'size': y_val,
+          'color': y_val*10,
           'cmin': 0,
           'cmax': 100,
           'colorscale': 'Blue',
@@ -148,7 +158,7 @@ def return_figures(countries=country_default):
   layout_three = {
     'geo': {
         'scope': 'earth',
-        'resolution': 50
+        'resolution': 100
     }
   }
 
@@ -233,7 +243,7 @@ def return_figures(countries=country_default):
   layout_five = {
     'geo': {
         'scope': 'earth',
-        'resolution': 50
+        'resolution': 100
     }
   }
 
