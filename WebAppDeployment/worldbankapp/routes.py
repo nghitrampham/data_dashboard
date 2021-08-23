@@ -12,8 +12,8 @@ def index():
 	# List of countries for filter
 	country_codes = [['Canada','CAN'],['United States','USA'],['Brazil','BRA'],
 	['France','FRA'],['India','IND'],['Italy','ITA'],['Germany','DEU'],
-	['United Kingdom','GBR'],['China','CHN'],['Japan','JPN']]
-
+	['United Kingdom','GBR'],['China','CHN'], ['Japan','JPN']]
+	# ['Vietnam', 'VNM']
 	# Parse the POST request countries list
 	if (request.method == 'POST') and request.form:
 		figures = return_figures(request.form)

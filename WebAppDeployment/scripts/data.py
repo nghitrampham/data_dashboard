@@ -9,7 +9,7 @@ import requests
 # default list of all countries of interest
 country_default = OrderedDict([('Canada', 'CAN'), ('United States', 'USA'), 
   ('Brazil', 'BRA'), ('France', 'FRA'), ('India', 'IND'), ('Italy', 'ITA'), 
-  ('Germany', 'DEU'), ('United Kingdom', 'GBR'), ('China', 'CHN'), ('Japan', 'JPN')])
+  ('Germany', 'DEU'), ('United Kingdom', 'GBR'), ('China', 'CHN'), ['Japan','JPN']])
 
 
 def return_figures(countries=country_default):
@@ -27,18 +27,21 @@ def return_figures(countries=country_default):
 
   """
 
-  # when the countries variable is empty, use the country_default dictionary
   if not bool(countries):
     countries = country_default
 
-  # prepare filter data for World Bank API
-  # the API uses ISO-3 country codes separated by ;
+  # the World Bank API uses ISO-3 country codes separated by ;
   country_filter = list(countries.values())
   country_filter = [x.lower() for x in country_filter]
   country_filter = ';'.join(country_filter)
 
   # World Bank indicators of interest for pulling data
-  indicators = ['NY.GDP.MKTP.CD', 'SP.RUR.TOTL.ZS', 'SP.RUR.TOTL.ZS', 'AG.LND.FRST.ZS']
+  # SE.ADT.LITR.ZS = Literacy rate, adult total (% of people ages 15 and above)
+  # SP.POP.GROW = population growth
+  # NY.GDP.MKTP.CD = GDP
+  # SP.RUR.TOTL.ZS = Rural population (% of total population)
+  # SL.UEM.TOTL.ZS = Unemployment, total (% of total labor force) (modeled ILO estimate)
+  indicators = ['NY.GDP.MKTP.CD', 'SP.RUR.TOTL.ZS', 'SE.ADT.LITR.ZS', 'AG.LND.FRST.ZS', 'SP.POP.GROW']
 
   data_frames = [] # stores the data frames with the indicator data of interest
   urls = [] # url endpoints for the World Bank API
@@ -69,8 +72,6 @@ def return_figures(countries=country_default):
   graph_one = []
   df_one = pd.DataFrame(data_frames[0])
 
-  # filter and sort values for the visualization
-  # filtering plots the countries in decreasing order by their values
   # df_one = df_one[(df_one['date'] == '2015') | (df_one['date'] == '1990')]
   df_one.sort_values('value', ascending=False, inplace=True)
 
@@ -96,6 +97,7 @@ def return_figures(countries=country_default):
                   autotick=False, tick0=1991, dtick=25),
                 yaxis = dict(title = 'GDP'),
                 )
+
   #########################################################
   # second chart plots ararble land for 2015 as a bar chart
   #########################################################
@@ -124,45 +126,64 @@ def return_figures(countries=country_default):
   # third chart plots percent of population that is rural from 1990 to 2015
   #########################################################
 
-  df_three = pd.DataFrame(data_frames[1])
-  df_three = df_three[(df_three['date'] == '2015')]
+  # df_three = pd.DataFrame(data_frames[1])
+  # df_three = df_three[(df_three['date'] == '2015')]
 
-  locations = []
-  y_val = []
-  for country in countrylist:
-    locations.append(country_default[country])
-    y_val.append(df_three[df_three['country'] == country].value.tolist()[0])
+  # locations = []
+  # y_val = []
+  # for country in countrylist:
+  #   locations.append(country_default[country])
+  #   y_val.append(df_three[df_three['country'] == country].value.tolist()[0])
 
-  graph_three = []
-  graph_three.append(
-      go.Scattergeo(
-        locations = locations,
-        marker = {
-          'size': y_val,
-          'color': [i*10 for i in y_val],
-          'cmin': 0,
-          'cmax': 100,
-          'colorscale': 'Blue',
-          'colorbar': {
-            'title': 'Some rate',
-            'ticksuffix': '%',
-            'showticksuffix': 'last'
-          },
-          'line': {  
-            'color': 'black'
-          }
-        },
-        mode = 'markers',
-        name = 'earth data'
-      )
-        )
-  layout_three = {
-    'geo': {
-        'scope': 'earth',
-        'resolution': 100
-    }, 
-    'title': 'Rural Population versus <br> Forested Area (Square Km) 1990-2015'
-  }
+  # graph_three = []
+  # graph_three.append(
+  #     go.Scattergeo(
+  #       locations = locations,
+  #       marker = {
+  #         'size': y_val,
+  #         'color': [i*10 for i in y_val],
+  #         'cmin': 0,
+  #         'cmax': 100,
+  #         'colorscale': 'Blue',
+  #         'colorbar': {
+  #           'title': 'Some rate',
+  #           'ticksuffix': '%',
+  #           'showticksuffix': 'last'
+  #         },
+  #         'line': {  
+  #           'color': 'black'
+  #         }
+  #       },
+  #       mode = 'markers',
+  #       name = 'earth data'
+  #     )
+  #       )
+  # layout_three = {
+  #   'geo': {
+  #       'scope': 'earth',
+  #       'resolution': 100
+  #   }, 
+  #   'title': 'Rural Population versus <br> Forested Area (Square Km) 1990-2015'
+  # }
+
+  trace1 = {
+      'x': ['giraffes', 'orangutans', 'monkeys'],
+      'y': [20, 14, 23],
+      'name': 'SF Zoo',
+      'type': 'bar'
+    }
+
+  trace2 = {
+      'x': ['giraffes', 'orangutans', 'monkeys'],
+      'y': [12, 18, 29],
+      'name': 'LA Zoo',
+      'type': 'bar',
+      
+    }
+
+  graph_three = [trace1, trace2]
+
+  layout_three = {'barmode': 'stack'}
 
 
   #########################################################
@@ -212,29 +233,33 @@ def return_figures(countries=country_default):
 
 
   #########################################################
-  # fourth chart shows rural population vs arable land as percents
+  # fifth chart shows rural population vs arable land as percents
   #########################################################
+  df_five = pd.DataFrame(data_frames[1])
+  df_five = df_five[(df_five['date'] == '2015')]
+
   locations = []
+  y_val = []
   for country in countrylist:
     locations.append(country_default[country])
+    y_val.append(df_five[df_five['country'] == country].value.tolist()[0])
 
-  graph_five= []
+  graph_five = []
   graph_five.append(
       go.Scattergeo(
-        # locations = ['FRA', 'DEU', 'RUS', 'JPN', 'GBR', 'CHN', 'CAN', 'USA', 'BRA', 'IND'],
         locations = locations,
         marker = {
-          'size': [20, 30, 15, 100, 80, 20, 30, 15, 100, 80],
-          'color': [10, 20, 40, 50, 60, 20, 30, 15, 100, 80],
+          'size': y_val,
+          'color': [i*10 for i in y_val],
           'cmin': 0,
           'cmax': 100,
-          'colorscale': 'Greens',
+          'colorscale': 'Blue',
           'colorbar': {
             'title': 'Some rate',
             'ticksuffix': '%',
             'showticksuffix': 'last'
           },
-          'line': {
+          'line': {  
             'color': 'black'
           }
         },
