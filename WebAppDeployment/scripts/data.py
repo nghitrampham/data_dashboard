@@ -160,7 +160,8 @@ def return_figures(countries=country_default):
     'geo': {
         'scope': 'earth',
         'resolution': 100
-    }
+    }, 
+    'title': 'Rural Population versus <br> Forested Area (Square Km) 1990-2015'
   }
 
 
@@ -245,7 +246,8 @@ def return_figures(countries=country_default):
     'geo': {
         'scope': 'earth',
         'resolution': 100
-    }
+    }, 
+    'title': 'Rural Population versus <br> Forested Area (Square Km) 1990-2015'
   }
 
   #########################################################
