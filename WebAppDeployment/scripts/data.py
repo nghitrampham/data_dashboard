@@ -36,12 +36,12 @@ def return_figures(countries=country_default):
   country_filter = ';'.join(country_filter)
 
   # World Bank indicators of interest for pulling data
-  # SE.ADT.LITR.ZS = Literacy rate, adult total (% of people ages 15 and above)
+  # TX.VAL.MRCH.CD.WT = Merchandise exports (current US$)
   # SP.POP.GROW = Population growth (annual %)
-  # NY.GDP.MKTP.CD = GDP
+  # NY.GDP.MKTP.CD = GDP (current US$)
   # SP.RUR.TOTL.ZS = Rural population (% of total population)
   # SL.UEM.TOTL.ZS = Unemployment, total (% of total labor force) (modeled ILO estimate)
-  indicators = ['NY.GDP.MKTP.CD', 'SP.RUR.TOTL.ZS', 'AG.LND.FRST.ZS', 'SE.ADT.LITR.ZS', 'SL.UEM.TOTL.ZS', 'SP.POP.GROW']
+  indicators = ['NY.GDP.MKTP.CD', 'SL.UEM.TOTL.ZS', 'SP.RUR.TOTL.ZS', 'AG.LND.FRST.ZS', 'TX.VAL.MRCH.CD.WT', 'SP.POP.GROW']
 
   data_frames = [] # stores the data frames with the indicator data of interest
   urls = [] # url endpoints for the World Bank API
@@ -72,8 +72,7 @@ def return_figures(countries=country_default):
   graph_one = []
   df_one = pd.DataFrame(data_frames[0])
 
-  # df_one = df_one[(df_one['date'] == '2015') | (df_one['date'] == '1990')]
-  df_one.sort_values('value', ascending=False, inplace=True)
+  df_one.sort_values('date', ascending=False, inplace=True)
 
   # this  country list is re-used by all the charts to ensure legends have the same
   # order and color
@@ -92,25 +91,26 @@ def return_figures(countries=country_default):
           )
       )
 
-  layout_one = dict(title = 'Change in GDP in Various Countries from 1990 to 2015',
+  layout_one = dict(title = 'GDP (current US$) from 1991 to 2016',
                 xaxis = dict(title = 'Year',
-                  autotick=False, tick0=1991, dtick=25),
-                yaxis = dict(title = 'GDP'),
+                  autotick=False, tick0=1991, dtick=5),
+                yaxis = dict(title = 'Unemployment rate'),
                 )
 
   #########################################################
   # second chart plots ararble land for 2015 as a bar chart
   #########################################################
   graph_two = []
-  df_one.sort_values('value', ascending=False, inplace=True)
-  df_one = df_one[df_one['date'] == '2016'] 
+  df_two = pd.DataFrame(data_frames[1])
+  df_two.sort_values('value', ascending=False, inplace=True)
+  df_two = df_two[df_two['date'] == '2016'] 
 
   graph_two.append(
       go.Bar(
-      x = df_one.country.tolist(),
-      y = df_one.value.tolist(),
+      x = df_two.country.tolist(),
+      y = df_two.value.tolist(),
       marker =  {
-      'color': '#f5a742',
+      # 'color': '#7393B3',
       'line': {
           'width': 2
         }
@@ -118,32 +118,43 @@ def return_figures(countries=country_default):
       )
   )
 
-  layout_two = dict(title = 'Population growth (annual %) in 2016',
+  layout_two = dict(title = 'Unemployment Rate in 2016',
                 xaxis = dict(title = 'Country',),
                 yaxis = dict(title = 'Growth'),
                 )
   #########################################################
   # third chart plots percent of population that is rural from 1990 to 2015
   #########################################################
+  graph_three = []
+  df_three = pd.DataFrame(data_frames[4])
+  df_three.sort_values('date', ascending=False, inplace=True)
 
   trace1 = {
-      'x': ['giraffes', 'orangutans', 'monkeys'],
-      'y': [20, 14, 23],
-      'name': 'SF Zoo',
+      'x': df_three[df_three['date'] == '2014'].country.tolist(),
+      'y': df_three[df_three['date'] == '2014'].value.tolist(),
+      'name': '2014',
       'type': 'bar'
     }
 
   trace2 = {
-      'x': ['giraffes', 'orangutans', 'monkeys'],
-      'y': [12, 18, 29],
-      'name': 'LA Zoo',
+      'x': df_three[df_three['date'] == '2015'].country.tolist(),
+      'y': df_three[df_three['date'] == '2015'].value.tolist(),
+      'name': '2015',
       'type': 'bar',
       
     }
 
-  graph_three = [trace1, trace2]
+  trace3 = {
+      'x': df_three[df_three['date'] == '2016'].country.tolist(),
+      'y': df_three[df_three['date'] == '2016'].value.tolist(),
+      'name': '2016',
+      'type': 'bar',
+      
+    }
 
-  layout_three = {'barmode': 'stack'}
+  graph_three = [trace1, trace2, trace3]
+
+  layout_three = {'barmode': 'stack', 'title': 'Merchandise exports (current US$) from 2014-1016' }
 
 
   #########################################################
@@ -185,7 +196,7 @@ def return_figures(countries=country_default):
           )
       )
 
-  layout_four = dict(title = '% of Population that is Rural versus <br> % of Land that is Forested <br> 1990-2015',
+  layout_four = dict(title = '% of Population that is Rural versus <br> % of Land that is Forested <br> 1991-2016',
                 xaxis = dict(title = '% Population that is Rural', range=[0,100], dtick=10),
                 yaxis = dict(title = '% of Area that is Forested', range=[0,100], dtick=10),
                 )
@@ -195,27 +206,27 @@ def return_figures(countries=country_default):
   #########################################################
   # fifth chart shows rural population vs arable land as percents
   #########################################################
-  df_five = pd.DataFrame(data_frames[1])
+  df_five = pd.DataFrame(data_frames[5])
   df_five = df_five[(df_five['date'] == '2015')]
 
   locations = []
   y_val = []
   for country in countrylist:
     locations.append(country_default[country])
-    y_val.append(df_five[df_five['country'] == country].value.tolist()[0])
+    y_val.append(float(df_five[df_five['country'] == country].value.tolist()[0]))
 
   graph_five = []
   graph_five.append(
       go.Scattergeo(
         locations = locations,
         marker = {
-          'size': y_val,
-          'color': [i*10 for i in y_val],
+          'size': [int(val*50) for val in y_val],
+          'color': [int(val*100) for val in y_val],
           'cmin': 0,
           'cmax': 100,
-          'colorscale': 'Greens',
+          'colorscale': 'Blue',
           'colorbar': {
-            'title': 'Some rate',
+            'title': 'Growth Rate (annual %)',
             'ticksuffix': '%',
             'showticksuffix': 'last'
           },
@@ -232,7 +243,7 @@ def return_figures(countries=country_default):
         'scope': 'earth',
         'resolution': 100
     }, 
-    'title': 'Rural Population versus <br> Forested Area (Square Km) 1990-2015'
+    'title': 'Population growth (annual %) in 2016'
   }
 
   #########################################################
