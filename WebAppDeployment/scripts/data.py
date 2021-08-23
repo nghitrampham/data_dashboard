@@ -137,39 +137,77 @@ def return_figures(countries=country_default):
   # layout_three = dict(title = 'Change in Rural Population <br> (Percent of Total Population)',
   #               xaxis = dict(title = 'Year',
   #                 autotick=False, tick0=1990, dtick=25),
-  #               yaxis = dict(title = 'Percent'),
+  #               yaxis = dict(title = 'Percent')
   #               )
 
+  graph_three = []
+  df_three = pd.DataFrame(data_frames[1])
+  df_three = df_three[(df_three['date'] == '2015') | (df_three['date'] == '1990')]
+
+  df_three.sort_values('value', ascending=False, inplace=True)
+  for country in countrylist:
+      
+      val =  df_three[df_three['country'] == country].value.tolist()
+      loc = country_default[country]
+      graph_three.append(
+          go.Scattergeo(
+          mode = 'markers',
+          locations: [loc], 
+          marker: {
+                  size: [val],
+                  color: [val],
+                  cmin: 0,
+                  cmax: 50,
+                  colorscale: 'Greens',
+                  colorbar: {
+                      title: 'Rural Population',
+                      ticksuffix: '%',
+                      showticksuffix: 'last'
+                  },
+                  line: {
+                      color: 'black'
+                  }
+              },
+          name = country
+          )
+      )
+
+  layout_three = dict(title = 'Change in Rural Population <br> (Percent of Total Population)',
+                # xaxis = dict(title = 'Year',
+                #   autotick=False, tick0=1990, dtick=25),
+                # yaxis = dict(title = 'Percent')
+                )
 
 
-  graph_three = [{
-    type: 'scattergeo',
-    mode: 'markers',
-    locations: ['FRA', 'DEU', 'RUS', 'JPN'],
-    marker: {
-        size: [20, 30, 15, 100],
-        color: [10, 20, 40, 50],
-        cmin: 0,
-        cmax: 50,
-        colorscale: 'Greens',
-        colorbar: {
-            title: 'Some rate',
-            ticksuffix: '%',
-            showticksuffix: 'last'
-        },
-        line: {
-            color: 'black'
-        }
-    },
-    name: 'europe data'
-  }]
 
-  layout_three = {
-    'geo': {
-        'scope': 'earth',
-        'resolution': 50
-    }
-  }
+  # graph_three = [{
+  #   type: 'scattergeo',
+  #   mode: 'markers',
+  #   locations: ['FRA', 'DEU', 'RUS', 'JPN'],
+  #   marker: {
+  #       size: [20, 30, 15, 100],
+  #       color: [10, 20, 40, 50],
+  #       cmin: 0,
+  #       cmax: 50,
+  #       colorscale: 'Greens',
+  #       colorbar: {
+  #           title: 'Some rate',
+  #           ticksuffix: '%',
+  #           showticksuffix: 'last'
+  #       },
+  #       line: {
+  #           color: 'black'
+  #       }
+  #   },
+  #   name: 'europe data'
+  # }]
+
+  # layout_three = {
+  #   'geo': {
+  #       'scope': 'earth',
+  #       'resolution': 50
+  #   }
+  # }
 
 
   #########################################################
