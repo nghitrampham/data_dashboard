@@ -111,6 +111,7 @@ def return_figures(countries=country_default):
       'color': '#1f77b4b',
       'line': {
           'width': 2
+        }
       }
       )
   )
@@ -138,7 +139,7 @@ def return_figures(countries=country_default):
         locations = locations,
         marker = {
           'size': y_val,
-          'color': y_val*10,
+          'color': [i*10 for i in y_val],
           'cmin': 0,
           'cmax': 100,
           'colorscale': 'Blue',
@@ -147,7 +148,7 @@ def return_figures(countries=country_default):
             'ticksuffix': '%',
             'showticksuffix': 'last'
           },
-          'line': {
+          'line': {  
             'color': 'black'
           }
         },
