@@ -37,11 +37,11 @@ def return_figures(countries=country_default):
 
   # World Bank indicators of interest for pulling data
   # SE.ADT.LITR.ZS = Literacy rate, adult total (% of people ages 15 and above)
-  # SP.POP.GROW = population growth
+  # SP.POP.GROW = Population growth (annual %)
   # NY.GDP.MKTP.CD = GDP
   # SP.RUR.TOTL.ZS = Rural population (% of total population)
   # SL.UEM.TOTL.ZS = Unemployment, total (% of total labor force) (modeled ILO estimate)
-  indicators = ['NY.GDP.MKTP.CD', 'SP.RUR.TOTL.ZS', 'SE.ADT.LITR.ZS', 'AG.LND.FRST.ZS', 'SP.POP.GROW']
+  indicators = ['NY.GDP.MKTP.CD', 'SP.RUR.TOTL.ZS', 'AG.LND.FRST.ZS', 'SE.ADT.LITR.ZS', 'SL.UEM.TOTL.ZS', 'SP.POP.GROW']
 
   data_frames = [] # stores the data frames with the indicator data of interest
   urls = [] # url endpoints for the World Bank API
@@ -103,14 +103,14 @@ def return_figures(countries=country_default):
   #########################################################
   graph_two = []
   df_one.sort_values('value', ascending=False, inplace=True)
-  df_one = df_one[df_one['date'] == '2015'] 
+  df_one = df_one[df_one['date'] == '2016'] 
 
   graph_two.append(
       go.Bar(
       x = df_one.country.tolist(),
       y = df_one.value.tolist(),
       marker =  {
-      'color': '#1f77b4b',
+      'color': '#f5a742',
       'line': {
           'width': 2
         }
@@ -118,53 +118,13 @@ def return_figures(countries=country_default):
       )
   )
 
-  layout_two = dict(title = 'Hectares Arable Land per Person in 2015',
+  layout_two = dict(title = 'Population growth (annual %) in 2016',
                 xaxis = dict(title = 'Country',),
-                yaxis = dict(title = 'Hectares per person'),
+                yaxis = dict(title = 'Growth'),
                 )
   #########################################################
   # third chart plots percent of population that is rural from 1990 to 2015
   #########################################################
-
-  # df_three = pd.DataFrame(data_frames[1])
-  # df_three = df_three[(df_three['date'] == '2015')]
-
-  # locations = []
-  # y_val = []
-  # for country in countrylist:
-  #   locations.append(country_default[country])
-  #   y_val.append(df_three[df_three['country'] == country].value.tolist()[0])
-
-  # graph_three = []
-  # graph_three.append(
-  #     go.Scattergeo(
-  #       locations = locations,
-  #       marker = {
-  #         'size': y_val,
-  #         'color': [i*10 for i in y_val],
-  #         'cmin': 0,
-  #         'cmax': 100,
-  #         'colorscale': 'Blue',
-  #         'colorbar': {
-  #           'title': 'Some rate',
-  #           'ticksuffix': '%',
-  #           'showticksuffix': 'last'
-  #         },
-  #         'line': {  
-  #           'color': 'black'
-  #         }
-  #       },
-  #       mode = 'markers',
-  #       name = 'earth data'
-  #     )
-  #       )
-  # layout_three = {
-  #   'geo': {
-  #       'scope': 'earth',
-  #       'resolution': 100
-  #   }, 
-  #   'title': 'Rural Population versus <br> Forested Area (Square Km) 1990-2015'
-  # }
 
   trace1 = {
       'x': ['giraffes', 'orangutans', 'monkeys'],
@@ -253,7 +213,7 @@ def return_figures(countries=country_default):
           'color': [i*10 for i in y_val],
           'cmin': 0,
           'cmax': 100,
-          'colorscale': 'Blue',
+          'colorscale': 'Greens',
           'colorbar': {
             'title': 'Some rate',
             'ticksuffix': '%',
